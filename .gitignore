@@ -46,6 +46,7 @@ htmlcov
 .idea
 *.iml
 *.komodoproject
+.vscode/
 
 # Complexity
 output/*.html
@@ -69,3 +70,6 @@ docs/_build
 
 # Mypy Cache
 .mypy_cache/
+
+# Project cruft
+tests/out.csv
