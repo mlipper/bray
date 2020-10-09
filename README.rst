@@ -81,7 +81,39 @@ https://bray.readthedocs.io/
 Development
 ===========
 
+
+After not using python heavily for several years, I turned to the
+Interwebs to familiarize myself with the modern Python ecosystem.
+I found this article:
+
+https://blog.ionelmc.ro/2014/05/25/python-packaging/#the-structure
+
+Thus, the initial commit of this project was generated using a library
+written by the author:
+
+https://github.com/ionelmc/cookiecutter-pylibrary
+
+If I've understood correctly, this is an enhanced cookiecutter template
+which differs from the original by using a directory named 'src' source
+in root repository directory to contain a project's top-level module.
+
+Following along with the article/library's design, using a "src folder"
+requires that bray is packaged and installed so as to be available to
+the target python runtime without too many shenanigans running running
+tests.
+
+To avoid messing with the system python/site packages and when using
+tox, virtual environments are used (pipenv, virtualenv, etc.). Before
+the tests (using pytest) will find bray, the following command must be
+run (once) from the root directory in each new environment::
+
+    pip install --editable .
+
 To run all the tests run::
+
+    pytest
+
+or::
 
     tox
 
