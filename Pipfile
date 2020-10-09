@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pylint = "*"
+tox = "*"
+autopep8 = "*"
 
 [packages]
 bonobo = "==0.7.0rc3"
