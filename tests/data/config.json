@@ -1,0 +1,31 @@
+{
+    "name": "example-etl",
+    "data_dir": "example",
+    "ref_prefix": "<",
+    "ref_suffix": ">:",
+    "geoclient": {
+        "name": "search",
+        "uri": "https://maps.nyc.gov/geoclient/v2/search.json",
+        "query": {
+            "input": "<arg>:text",
+            "app_id": "<env>:APP_ID",
+            "app_key": "<env>:APP_KEY",
+            "returnRejections": "true"
+        }
+    },
+    "input": {
+        "file": "data/in.csv",
+        "fields": [
+            "id",
+            "name",
+            "text",
+            "houseNumber",
+            "street",
+            "borough",
+            "zipcode"
+        ]
+    },
+    "output": {
+        "file": "data/out.csv"
+    }
+}

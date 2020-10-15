@@ -1,0 +1,37 @@
+{
+    "id": "msplva-gisapp06-87894-1591996493462",
+    "status": "REJECTED",
+    "input": "65 Kissena Blvd queens",
+    "results": [
+        {
+            "level": "0",
+            "status": "REJECTED",
+            "request": "address [houseNumber=65, street=Kissena Blvd, borough=QUEENS, zip=null]",
+            "response": {
+                "boroughCode1In": "4",
+                "crossStreetNamesFlagIn": "E",
+                "firstBoroughName": "QUEENS",
+                "firstStreetCode": "45239001010",
+                "firstStreetNameNormalized": "KISSENA BOULEVARD",
+                "geosupportFunctionCode": "1B",
+                "geosupportReturnCode": "13",
+                "geosupportReturnCode2": "13",
+                "houseNumber": "65",
+                "houseNumberIn": "65",
+                "houseNumberSortFormat": "000065000AA",
+                "message": "ADDRESS NUMBER HAS INVALID HYPHENATION FOR THIS STREET",
+                "message2": "ADDRESS NUMBER HAS INVALID HYPHENATION FOR THIS STREET",
+                "reasonCode": "G",
+                "reasonCode1a": "G",
+                "reasonCode1e": "G",
+                "reasonCode2": "G",
+                "returnCode1a": "13",
+                "returnCode1e": "13",
+                "streetName1In": "KISSENA BLVD",
+                "workAreaFormatIndicatorIn": "C"
+            }
+        }
+    ],
+    "parseTree": null,
+    "policy": null
+}
