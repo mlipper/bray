@@ -6,6 +6,8 @@ from pathlib import os, Path
 from . import FIXTURE_ENV
 from bray import config
 
+Expected = namedtuple("Expected", "expected_token expected_value expected_default")
+
 tokenvalues = {'first': 'val1', 'second': None, 'third': 'val3'}
 default_default = 'double default value'
 token_data = [
@@ -13,21 +15,21 @@ token_data = [
     (tokenvalues, {'first': 'defaultval1', 'second': 'defaultval2'}, default_default,
         [ # Expected results #1
         #1.1
-        namedtuple("Expected", "expected_token expected_value expected_default")('first', 'val1', 'defaultval1'),
+        Expected('first', 'val1', 'defaultval1'),
         #1.2
-        namedtuple("Expected", "expected_token expected_value expected_default")('second', 'defaultval2', 'defaultval2'),
+        Expected('second', 'defaultval2', 'defaultval2'),
         #1.3
-        namedtuple("Expected", "expected_token expected_value expected_default")('third', 'val3', 'defaultval3'),
+        Expected('third', 'val3', 'defaultval3'),
         ]),
     #2 - Arguments
     (tokenvalues, {'random': None}, default_default,
         [  # Expected results #2
         #2.1
-        namedtuple("Expected", "expected_token expected_value expected_default")('first', 'val1', default_default),
+        Expected('first', 'val1', default_default),
         #2.2
-        namedtuple("Expected", "expected_token expected_value expected_default")('second', default_default, default_default),
+        Expected('second', default_default, default_default),
         #2.3
-        namedtuple("Expected", "expected_token expected_value expected_default")('third', 'val3', default_default),
+        Expected('third', 'val3', default_default),
     ])
 ]
 token_keyword_data = [
@@ -35,33 +37,35 @@ token_keyword_data = [
     ({'tokenvalues': tokenvalues, 'tokendefaults': {'first': 'defaultval1', 'second': 'defaultval2'}, 'default_default': default_default},
         [  # Expected kw results #1
         #1.1
-        namedtuple("Expected", "expected_token expected_value expected_default")('first', 'val1', 'defaultval1'),
+        Expected('first', 'val1', 'defaultval1'),
         #1.2
-        namedtuple("Expected", "expected_token expected_value expected_default")('second', 'defaultval2', 'defaultval2'),
+        Expected('second', 'defaultval2', 'defaultval2'),
         #1.3
-        namedtuple("Expected", "expected_token expected_value expected_default")('third', 'val3', 'defaultval3'),
+        Expected('third', 'val3', 'defaultval3'),
     ]),
     #2 - Keyword arguments
     ({'tokenvalues': tokenvalues, 'default_default': default_default},
         [  # Expected kw results #2
         #2.1
-        namedtuple("Expected", "expected_token expected_value expected_default")('first', 'val1', default_default),
+        Expected('first', 'val1', default_default),
         #2.2
-        namedtuple("Expected", "expected_token expected_value expected_default")('second', default_default, default_default),
+        Expected('second', default_default, default_default),
         #2.3
-        namedtuple("Expected", "expected_token expected_value expected_default")('third', 'val3', default_default),
+        Expected('third', 'val3', default_default),
     ])
 ]
 
 @pytest.mark.parametrize('tvalues,tdefaults,ddefaults,expected', token_data)
-def test_tokenizer_positional_args(tvalues, tdefaults, ddefaults, expected):
-    actual = config.tokenizer(tvalues, tdefaults, ddefaults)
+def test_filterset_positional_args(tvalues, tdefaults, ddefaults, expected):
+    filterset = config.FilterSet(tvalues, tdefaults, ddefaults)
+    actual = filterset.getfilters()
     assert len(actual) == len(expected)
 
 
 @pytest.mark.parametrize('kwargs,expected', token_keyword_data)
-def test_tokenizer_keyword_args(kwargs, expected):
-    actual = config.tokenizer(**kwargs)
+def test_filterset_keyword_args(kwargs, expected):
+    filterset = config.FilterSet(**kwargs)
+    actual = filterset.getfilters()
     assert len(actual) == len(expected)
 
 def test_project_load_no_decode(config_json):
