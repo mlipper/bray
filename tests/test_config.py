@@ -1,9 +1,8 @@
-import json
 from collections import namedtuple
-import pytest
 from pathlib import os, Path
+import json
+import pytest
 
-from . import FIXTURE_ENV
 from bray import config
 
 Expected = namedtuple("Expected", "expected_token expected_value expected_default")
@@ -61,7 +60,6 @@ def test_filterset_positional_args(tvalues, tdefaults, ddefaults, expected):
     actual = filterset.getfilters()
     assert len(actual) == len(expected)
 
-
 @pytest.mark.parametrize('kwargs,expected', token_keyword_data)
 def test_filterset_keyword_args(kwargs, expected):
     filterset = config.FilterSet(**kwargs)
@@ -69,23 +67,15 @@ def test_filterset_keyword_args(kwargs, expected):
     assert len(actual) == len(expected)
 
 def test_project_load_no_decode(config_json):
-
     project = config.Project('example', config_json)
     assert 'example' == project.name
     config_obj = project.load()
     assert config_obj['name'] == 'example-etl'
-    #print(json.dumps(config_obj, indent=4))
 
-
-def test_project_load_decode(config_json, mock_app_id_env, mock_app_key_env):
-
-    assert FIXTURE_ENV['APP_ID'] == os.getenv('APP_ID')
-    assert FIXTURE_ENV['APP_KEY'] == os.getenv('APP_KEY')
-
+def test_project_load_decode(config_json, mock_env_app_id, mock_env_app_key):
     project = config.Project('example', config_json, decoder=True)
     assert 'example' == project.name
     config_obj = project.load()
     assert config_obj['name'] == 'example-etl'
-    assert config_obj['geoclient']['query']['app_id'] == FIXTURE_ENV['APP_ID']
-    assert config_obj['geoclient']['query']['app_key'] == FIXTURE_ENV['APP_KEY']
-    #print(json.dumps(config_obj, indent=4))
+    assert config_obj['geoclient']['query']['app_id'] == mock_env_app_id
+    assert config_obj['geoclient']['query']['app_key'] == mock_env_app_key
