@@ -2,7 +2,7 @@ import pytest
 import json
 import os
 
-from . import FIXTURE_DIR
+from . import getfile
 from bray.geoclient import (
     HTTPEndpoint,
     Geoclient,
@@ -11,11 +11,11 @@ from bray.geoclient import (
 )
 
 SEARCH_FILES = {
-    'ok_exact_match': os.path.join(FIXTURE_DIR, 'search-ok-exact-match.json'),
-    'ok_mixed_matches': os.path.join(FIXTURE_DIR, 'search-ok-mixed-matches.json'),
-    'ok_possible_matches': os.path.join(FIXTURE_DIR, 'search-ok-possible-matches.json'),
-    'rejected_no_rejects': os.path.join(FIXTURE_DIR, 'search-rejected-no-rejects.json'),
-    'rejected_with_rejects': os.path.join(FIXTURE_DIR, 'search-rejected-with-rejects.json')
+    'ok_exact_match': getfile('search-ok-exact-match.json'),
+    'ok_mixed_matches': getfile('search-ok-mixed-matches.json'),
+    'ok_possible_matches': getfile('search-ok-possible-matches.json'),
+    'rejected_no_rejects': getfile('search-rejected-no-rejects.json'),
+    'rejected_with_rejects': getfile('search-rejected-with-rejects.json')
 }
 
 #

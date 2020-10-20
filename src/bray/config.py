@@ -1,16 +1,49 @@
 from collections import namedtuple
+from json import JSONDecoder
+from pathlib import os, Path
 import functools
 import json
-from json import JSONDecoder
 import logging
-from pathlib import (
-    os,
-    Path
-)
+import re
 
 from . import errors
 
 logger = logging.getLogger(__name__)
+
+class StringValueParser:
+    RE_PARSE_KEY_VALUE = re.compile('::')
+    RE_PARSE_TOKEN = re.compile('(?:@)([^@]+)(?:@)')
+
+    def __init__(self, context={}):
+        self._ctx = context
+
+    def __call__(self, string):
+        if string is None:
+            return None
+        result = self.maybe_key_value(string)
+        if isinstance(result, tuple):
+            k, v = result
+            return { k: self.maybe_replace_token(v, self._ctx)}
+        return self.maybe_replace_token(string, self._ctx)
+
+    def maybe_key_value(self, string):
+        strs = self.RE_PARSE_KEY_VALUE.split(string)
+        if strs and len(strs) > 1:
+            #print(f'keyvalue: {strs}')
+            k, v = strs
+            return (k.strip(), v.strip())
+        return string
+
+    def maybe_replace_token(self, string, context):
+        if string is None:
+            return None
+        strs = self.RE_PARSE_TOKEN.findall(string)
+        if strs and len(strs) >0:
+            #print(f'replacetoken: {strs}')
+            key = strs[0]
+            if key in context:
+                return context[key]
+        return string
 
 
 class FilterSet:

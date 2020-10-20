@@ -1,7 +1,9 @@
 from collections import namedtuple
+from configparser import ConfigParser, ExtendedInterpolation
 from pathlib import os, Path
 import json
 import pytest
+import re
 
 from bray import config
 
@@ -79,3 +81,23 @@ def test_project_load_decode(config_json, mock_env_app_id, mock_env_app_key):
     assert config_obj['name'] == 'example-etl'
     assert config_obj['geoclient']['query']['app_id'] == mock_env_app_id
     assert config_obj['geoclient']['query']['app_key'] == mock_env_app_key
+
+def test_how_parser_works(example_config_ini):
+    override = { 'all.query1': 'OVERRIDDEN', 'APP_KEY': 'REPLACED APP KEY'}
+    sparser = config.StringValueParser(override)
+    cfg = ConfigParser(interpolation=ExtendedInterpolation(), converters={'tokenval': sparser})
+    cfg.read(example_config_ini)
+    for section in cfg.sections():
+        print(section)
+        print('-' * len(section))
+        for k in cfg[section]:
+            #strval = cfg.get(section, k, vars=override)
+            #val = sparser(strval)
+            strval = cfg.gettokenval(section, k, vars=override)
+            val = strval
+            print(f'- {k} = {val}')
+        print()
+
+# [i.strip() for i in re.split(r'\n|[,]', 'a, b , c, ', re.DOTALL) if i != ' ']
+# [i.strip() for i in re.split(r'\n|[,]', 'a, b , c, ', re.DOTALL) if len(i.strip()) >0]
+# re.sub(r'\n',',',s)
