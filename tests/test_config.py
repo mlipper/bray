@@ -84,8 +84,8 @@ def test_project_load_decode(config_json, mock_env_app_id, mock_env_app_key):
 
 def test_how_parser_works(example_config_ini):
     override = { 'all.query1': 'OVERRIDDEN', 'APP_KEY': 'REPLACED APP KEY'}
-    sparser = config.StringValueParser(override)
-    cfg = ConfigParser(interpolation=ExtendedInterpolation(), converters={'tokenval': sparser})
+    svparser = config.StringValueParser(override)
+    cfg = ConfigParser(interpolation=ExtendedInterpolation(), converters={'tokenval': svparser})
     cfg.read(example_config_ini)
     for section in cfg.sections():
         print(section)
