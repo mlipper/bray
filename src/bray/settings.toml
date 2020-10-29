@@ -1,0 +1,12 @@
+[projects]
+basedir = "projects"
+datadir = "@format {this.PROJECTS.basedir}/data"
+
+[geoclient]
+app_id = "@format {env[BRAY_APP_ID]}"
+app_key = "@format {env[BRAY_APP_KEY]}"
+baseuri = "https://maps.nyc.gov/geoclient/v2"
+
+[geoclient.search]
+params = [ "input" ]
+query = { app_id = "@format {this.GEOCLIENT.app_id}", app_key = "@format {this.GEOCLIENT.app_key}", returnRejections = "true" }

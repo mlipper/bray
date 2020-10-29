@@ -74,3 +74,5 @@ docs/_build
 # Project cruft
 tests/out.csv
 TODO/
+# Ignore dynaconf secret files
+.secrets.*

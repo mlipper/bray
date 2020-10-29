@@ -1,0 +1,10 @@
+[projects.example]
+basedir = "tests/projects/example"
+name = "example"
+inputs = [ { id = "input.csv", path = "@format {this.PROJECTS.example.basedir}/data/in.csv", fields = ["Integration ID","Site Name","Full Address","Borough","Status"] } ]
+
+
+[geoclient]
+app_id = "example-project"
+app_key = "s3cret_key"
+baseuri = "https://example.com/geoclient"

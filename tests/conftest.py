@@ -1,24 +1,6 @@
-from collections import namedtuple
-from pathlib import os, Path
 import pytest
 
-from . import FIXTURE_DIR, FIXTURE_ENV, PROJECTS_DIR
-
-@pytest.fixture(scope="module")
-def config_json():
-    """Returns the path to the config.json file fixture as a str."""
-    file_path_str = os.path.join(FIXTURE_DIR, 'config.json')
-    assert Path(file_path_str).is_file()
-    return file_path_str
-
-@pytest.fixture(scope='module')
-def example_config_ini():
-    """Returns the path to the config.ini file from the example project as
-       a str.
-    """
-    file_path_str = os.path.join(PROJECTS_DIR, 'example', 'config.ini')
-    assert Path(file_path_str).is_file()
-    return file_path_str
+from . import FIXTURE_ENV, PROJECTS_DIR
 
 @pytest.fixture(scope='function')
 def mock_env_app_id(monkeypatch):
