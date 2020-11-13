@@ -16,12 +16,16 @@ Why does this file exist, and why not put this in __main__?
 """
 import argparse
 from . import logger
-
-parser = argparse.ArgumentParser(description='Command description.')
-parser.add_argument('names', metavar='NAME', nargs=argparse.ZERO_OR_MORE,
-                    help="A name of something.")
+from bray import etl
 
 def main(args=None):
+    parser = argparse.ArgumentParser(description='Invoke bray to geocode New York City location data with geoclient.')
+    parser.add_argument(
+                        'configfile',
+                        action='store_true',
+                        help='Path to bray configuration file.'
+    )
+    parser = etl.get_argument_parser(parser)
     args = parser.parse_args(args=args)
     #args = args[1:]
-    logger.info('Using arguments %s.', args.names)
+    logger.info('Using arguments %s.', args)

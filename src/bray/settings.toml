@@ -1,6 +1,10 @@
-[projects]
-basedir = "projects"
-datadir = "@format {this.PROJECTS.basedir}/data"
+dynaconf_merge = true
+[default]
+etl_dir = "etl"
+data_dir = "@format {this.DEFAULT.etl_dir}/data"
+input_file = "@format {this.DEFAULT.data_dir}/input.csv"
+output_file = "@format {this.DEFAULT.data_dir}/output.csv"
+job_file = "@format {this.DEFAULT.etl_dir}/job.toml"
 
 [geoclient]
 app_id = "@format {env[BRAY_APP_ID]}"
@@ -10,3 +14,23 @@ baseuri = "https://maps.nyc.gov/geoclient/v2"
 [geoclient.search]
 params = [ "input" ]
 query = { app_id = "@format {this.GEOCLIENT.app_id}", app_key = "@format {this.GEOCLIENT.app_key}", returnRejections = "true" }
+
+[service]
+types = ["db", "fs", "gc"]
+
+[service.fs]
+input = { id="fs.in", path="@format {this.DEFAULT.data_dir}" }
+output = { id="fs.out", path="@format {this.DEFAULT.data_dir}" }
+
+[service.gc]
+search = { id="gc.search", base="geoclient", endpoint="geoclient.search" }
+
+[service.db]
+# TODO implement database support
+# See https://docs.sqlalchemy.org/en/14/dialects/sqlite.html#module-sqlalchemy.dialects.sqlite.pysqlite
+database = "postgres"
+hostname = "localhost"
+password = "mulesRkewl"
+port = "5432"
+protocol = "postgresql"
+username = "donkey"

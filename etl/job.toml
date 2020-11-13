@@ -1,0 +1,14 @@
+dynaconf_merge = true
+[job]
+name = "bray-example"
+
+[job.input]
+file_system_id = "fs.in"
+path = "@format {this.DEFAULT.input_file}"
+fields = ["Integration ID","Site Name","Full Address","Borough","Status"]
+
+
+[geoclient]
+app_id = "bray-example"
+app_key = "s3cret_key"
+baseuri = "https://maps.nyc.gov/geoclient/v2"

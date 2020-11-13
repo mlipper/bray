@@ -1,6 +1,6 @@
 import pytest
 
-from . import FIXTURE_ENV, PROJECTS_DIR
+from . import FIXTURE_ENV
 
 @pytest.fixture(scope='function')
 def mock_env_app_id(monkeypatch):

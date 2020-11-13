@@ -6,6 +6,10 @@ from urllib import parse, request
 
 from . import logger
 
+class Endpoint:
+    ADDRESS = 'address'
+    SEARCH = 'search'
+
 class SearchDecoder(JSONDecoder):
 
     NEW_RESULT_STATUS = 'resultStatus'
@@ -79,16 +83,6 @@ class SearchDecoder(JSONDecoder):
         return f"{stats['EXACT_MATCH']} EXACT_MATCH, {stats['POSSIBLE_MATCH']} POSSIBLE_MATCH, {stats['REJECTED']} REJECTED"
 
 @dataclass
-class Endpoint:
-    id: str
-    uri: str
-    query: dict = field(default_factory=dict)
-    decoder: TypeVar('U', bound=JSONDecoder) = None
-
-    def add_params(self, **params):
-        for k, v in params.items():
-            self.query[k] = v
-
 class HTTPEndpoint:
     """Encapsulates use of urllib.parse and urllib.request in order to
        make it easier to mock URL encoding and HTTP calls issued by

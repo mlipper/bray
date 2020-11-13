@@ -1,19 +1,15 @@
-import os
+from pathlib import Path
 
-FIXTURE_DIR = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)),
-    'data',
-)
+FIXTURE_DIR = Path(__file__).parent / 'data'
 
 FIXTURE_ENV = {
     'APP_ID': 'test_config',
     'APP_KEY': 'S3CRETKEY'
 }
 
-PROJECTS_DIR = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)),
-    'projects',
-)
+ETL_DIR = Path.cwd() / 'etl'
+
+ETL_DATA_DIR = ETL_DIR / 'data'
 
 def getfile(filename):
-    return os.path.join(FIXTURE_DIR, filename)
+    return Path(FIXTURE_DIR) / filename
