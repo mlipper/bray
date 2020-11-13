@@ -8,11 +8,13 @@ pytest = "*"
 pylint = "*"
 tox = "*"
 autopep8 = "*"
+bray = {editable = true, path = "."}
+cookiecutter = "*"
+bump2version = "*"
 
 [packages]
 bonobo = "==0.7.0rc3"
 # bonobo = { git = "https://github.com/python-bonobo/bonobo.git", editable = true }
 dynaconf = "*"
-
-[requires]
-python_version = "3.8"
+#[requires]
+#python_version = "3.9"
