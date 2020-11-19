@@ -20,5 +20,8 @@ include *.lock
 include Pipfile
 include pytest.ini
 recursive-include src *.py
+recursive-include etl input.csv
+recursive-include etl *.toml
+recursive-include etl *.txt
 
-global-exclude *.py[cod] __pycache__/* *.so *.dylib
+global-exclude *.py[cod] __pycache__/* *.so *.dylib .env .secrets.toml

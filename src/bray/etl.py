@@ -1,35 +1,60 @@
-import argparse
+# import argparse
 import bonobo
 from bonobo.config import use
 
-from bray.errors import NotImplementedError
-from bray.geoclient import Endpoint
+# from bray.config import settings
+# from bray.errors import ConfigurationError, NotImplementedError
+from bray.errors import ConfigurationError
+# from bray.geoclient import Search, SEARCH_SERVICE_ID
+from bray.geoclient import SEARCH_SERVICE_ID
+# from bray.util import pathify
+
+# FIXME replace with dependency-injection. E.g., function, etc.
+SERVICE_NAMESPACE = "fs"
+FS_IN_SERVICE_ID = f"{SERVICE_NAMESPACE}.in"
+FS_OUT_SERVICE_ID = f"{SERVICE_NAMESPACE}.out"
+INPUT_FILE_SERVICE_ID = f"{SERVICE_NAMESPACE}.infile"
+OUTPUT_FILE_SERVICE_ID = f"{SERVICE_NAMESPACE}.outfile"
+DATA_DIR_SERVICE_ID = f"{SERVICE_NAMESPACE}.data_dir"
+JOB_ID = f"{SERVICE_NAMESPACE}.job"
+
 
 class Job:
-    def __init__(self, project):
-        self._project = project
+    def __init__(self, input_file, output_file, data_dir, search):
+        self.input_file = input_file
+        self.output_file = output_file
+        self.data_dir = data_dir
+        self.search = search
 
-    def datadir(self):
-        return self._project.datadir
-
-    def geoclient(self, endpoint=Endpoint.SEARCH):
-        if endpoint == Endpoint.SEARCH:
-            return self._project.search_endpoint
-        raise NotImplementedError(f'geoclient endpoint {endpoint} is not implemented.')
 
 @use("search")
 def search(integration_id, site_name, full_address, borough, status, search):
-    #row = {
-    #    'integration_id': integration_id,
-    #    'site_name': site_name,
-    #    'address': full_address,
-    #    'borough': borough,
-    #    'status': status
-    #}
-    #print(f'row={row}')
-    #return search.call({'input': full_address})
+    """Call the geoclient search endpoint.
+
+    :param integration_id: Caller-provided identifier
+    :type integration_id: str
+    :param site_name: Pass-through value (not used)
+    :type site_name: str
+    :param full_address: Location string to be passed as the input parameter to the geoclient search endpoint
+    :type full_address: str
+    :param borough: Pass-through value (not used)
+    :type borough: str
+    :param status: Pass-through value (not used)
+    :type status: str
+    :param search: Function which invokes the geoclient remote search endpoint (injected by bonobo framework)
+    :type search: bray.geoclient.Search
+    :return: Dictionary-like object containing the integration_id argument and all geocoding response attributes as key-value pairs.
+    :rtype: dict
+
+        row = {
+            'integration_id': integration_id,
+            'attr1': 'value1',
+            'attr2': 'value2',
+            ...
+        }
+
+    """
     result = search.call({'input': full_address})
-    #print(f'result.__class__=={result.__class__}')
     return {
         'integration_id': integration_id,
         **result
@@ -39,41 +64,35 @@ def search(integration_id, site_name, full_address, borough, status, search):
 def get_argument_parser(parser=None):
     parser = bonobo.get_argument_parser(parser=parser)
 
-    parser.add_argument('--limit',
-                        '-l',
-                        type=int,
-                        default=None,
-                        help='If set, limits the number of processed lines.'
-    )
-    parser.add_argument('--print',
-                        '-p',
-                        action='store_true',
-                        default=False,
-                        help='If set, pretty prints before writing to output file.'
+    parser.add_argument("--limit", "-l", type=int, default=None, help="If set, limits the number of processed lines.")
+    parser.add_argument(
+        "--print", "-p", action="store_true", default=False, help="If set, pretty prints before writing to output file."
     )
 
     return parser
 
-def get_graph(graph=None, *, _limit=(), _print=()):
+
+def get_graph(job, graph=None, *, _limit=(), _print=()):
     """
     This function builds the graph that needs to be executed.
 
     :return: bonobo.Graph
     """
     graph = graph or bonobo.Graph()
-    writer = bonobo.CsvWriter('output.csv', fs='fs.out', fields=[
-                              'integration_id', 'site_name', 'address', 'borough', 'status'])
+    # writer = bonobo.CsvWriter('output.csv', fs='fs.out', fields=[
+    #                           'integration_id', 'site_name', 'address', 'borough', 'status'])
     graph.add_chain(
-        bonobo.CsvReader('input.csv', fs='fs.in'),
+        bonobo.CsvReader(job.input_file, fs=FS_IN_SERVICE_ID),
         *_limit,
-        #bonobo.Filter(lambda *row: len(row) == 5),
-        search,
+        # bonobo.Filter(lambda *row: len(row) == 5),
+        job.search,
         bonobo.UnpackItems(0),
-        #bonobo.JsonWriter('output.json', fs='fs.out'),
-        bonobo.CsvWriter('output.csv', fs='fs.out'),
+        # bonobo.JsonWriter('output.json', fs='fs.out'),
+        bonobo.CsvWriter(job.output_file, fs=FS_OUT_SERVICE_ID),
         *_print,
     )
     return graph
+
 
 def get_graph_options(options):
     _limit = options.pop("limit", None)
@@ -82,7 +101,15 @@ def get_graph_options(options):
     return {"_limit": (bonobo.Limit(_limit),) if _limit else (), "_print": (bonobo.PrettyPrinter(),) if _print else ()}
 
 
-def get_services(job, **options):
+def run(job):
+    parser = get_argument_parser()
+    with bonobo.parse_args(parser) as options:
+        bonobo.run(
+            get_graph(job, **get_graph_options(options)), services=get_services(job)
+        )
+
+
+def get_services(job):
     """
     This function builds the services dictionary, which is a simple dict of names-to-implementation used by bonobo
     for runtime injection.
@@ -93,7 +120,39 @@ def get_services(job, **options):
     :return: dict
     """
     return {
-        "fs.in": bonobo.open_fs(job.datadir()),
-        "fs.out": bonobo.open_fs(job.datadir()),
-        "search": job.geoclient(),
+        FS_IN_SERVICE_ID: bonobo.open_fs(job.data_dir),
+        FS_OUT_SERVICE_ID: bonobo.open_fs(job.data_dir),
+        SEARCH_SERVICE_ID: job.search,
     }
+
+
+def register_services(settings, registry):
+    # FIXME replace hard-coded id's with methods on Registry class
+    search = registry[SEARCH_SERVICE_ID]
+    if search is None:
+        raise ConfigurationError("search cannot be None.")
+
+    if settings.default is None:
+        raise ConfigurationError("settings.default cannot be None.")
+
+    base_settings = settings.default
+
+    if base_settings.input_file is None:
+        raise ConfigurationError("input_file cannot be None.")
+
+    if base_settings.output_file is None:
+        raise ConfigurationError("output_file cannot be None.")
+
+    if base_settings.data_dir is None:
+        raise ConfigurationError("data_dir cannot be None.")
+
+    input_file = base_settings.input_file
+    registry[INPUT_FILE_SERVICE_ID] = input_file
+
+    output_file = base_settings.output_file
+    registry[OUTPUT_FILE_SERVICE_ID] = output_file
+
+    data_dir = base_settings.data_dir
+    registry[DATA_DIR_SERVICE_ID] = data_dir
+
+    registry[JOB_ID] = Job(input_file, output_file, data_dir, search)

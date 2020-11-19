@@ -2,9 +2,11 @@ dynaconf_merge = true
 [default]
 etl_dir = "etl"
 data_dir = "@format {this.DEFAULT.etl_dir}/data"
-input_file = "@format {this.DEFAULT.data_dir}/input.csv"
-output_file = "@format {this.DEFAULT.data_dir}/output.csv"
 job_file = "@format {this.DEFAULT.etl_dir}/job.toml"
+input_file = "input.csv"
+output_file = "output.csv"
+#input_file = "@format {this.DEFAULT.data_dir}/input.csv"
+#output_file = "@format {this.DEFAULT.data_dir}/output.csv"
 
 [geoclient]
 app_id = "@format {env[BRAY_APP_ID]}"
@@ -14,6 +16,7 @@ baseuri = "https://maps.nyc.gov/geoclient/v2"
 [geoclient.search]
 params = [ "input" ]
 query = { app_id = "@format {this.GEOCLIENT.app_id}", app_key = "@format {this.GEOCLIENT.app_key}", returnRejections = "true" }
+uri = "@format {this.GEOCLIENT.baseuri}/search"
 
 [service]
 types = ["db", "fs", "gc"]

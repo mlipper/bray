@@ -1,12 +1,14 @@
-import pytest
+# import pytest
 from bray.config import settings
 
+
 class TestConfig:
+
     def test_defaults(self):
         assert settings.default.etl_dir == "etl"
         assert settings.default.data_dir == "etl/data"
-        assert settings.default.input_file == "etl/data/input.csv"
-        assert settings.default.output_file == "etl/data/output.csv"
+        assert settings.default.input_file == "input.csv"
+        assert settings.default.output_file == "output.csv"
         assert settings.default.job_file == "etl/job.toml"
 
     def test_geoclient_settings(self):
@@ -24,11 +26,8 @@ class TestConfig:
 
     def test_example_job(self):
         assert settings.job.name == "bray-example"
-        assert settings.job.input.path == "etl/data/input.csv"
+        assert settings.job.input.path == "input.csv"
         assert settings.job.input.file_system_id == "fs.in"
 
-    def test_pathify(self):
-        pytest.fail("IMPLEMENT ME!")
-
-    def test_services(self):
-        pytest.fail("IMPLEMENT ME!")
+    def test_service(self):
+        assert settings.service.types == ["db", "fs", "gc"]

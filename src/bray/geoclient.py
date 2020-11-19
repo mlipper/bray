@@ -1,14 +1,16 @@
-from dataclasses import dataclass, field
+# from dataclasses import dataclass, field
+from dataclasses import dataclass
 import json
 from json import JSONDecoder
-from typing import TypeVar
+# from typing import TypeVar
 from urllib import parse, request
 
 from . import logger
 
-class Endpoint:
-    ADDRESS = 'address'
-    SEARCH = 'search'
+# FIXME replace with dependency-injection. E.g., function, etc.
+SERVICE_NAMESPACE = "gc"
+SEARCH_SERVICE_ID = f"{SERVICE_NAMESPACE}.search"
+
 
 class SearchDecoder(JSONDecoder):
 
@@ -61,7 +63,7 @@ class SearchDecoder(JSONDecoder):
 
     def result_and_stats(self, data):
         stats = self.new_stats_map()
-        if not SearchDecoder.RESULTS in data or data[SearchDecoder.RESULTS] is None:
+        if SearchDecoder.RESULTS not in data or data[SearchDecoder.RESULTS] is None:
             return (None, stats)
         all_results = data[SearchDecoder.RESULTS]
         if(len(all_results) == 0):
@@ -82,6 +84,7 @@ class SearchDecoder(JSONDecoder):
     def summarize(self, stats):
         return f"{stats['EXACT_MATCH']} EXACT_MATCH, {stats['POSSIBLE_MATCH']} POSSIBLE_MATCH, {stats['REJECTED']} REJECTED"
 
+
 @dataclass
 class HTTPEndpoint:
     """Encapsulates use of urllib.parse and urllib.request in order to
@@ -89,8 +92,8 @@ class HTTPEndpoint:
        these external libraries.
     """
     # Uncomment to make this class Callable
-    #def __call__(self, uri, query, decoder=None):
-    #    return self.get_json(uri, query, decoder)
+    # def __call__(self, uri, query, decoder=None):
+    #     return self.get_json(uri, query, decoder)
 
     def get_json(self, uri, query, decoder=None):
         encoded_url = f'{uri}?{parse.urlencode(query)}'
@@ -100,15 +103,16 @@ class HTTPEndpoint:
             return json.loads(stream)
         return json.loads(stream, cls=decoder)
 
+
 class Geoclient:
     """
     Geocodes locations with provided endpoint configurations.
     """
     def __init__(self, id, uri, query, decoder=None):
-        self._id=id
-        self._uri=uri
-        self._query=query
-        self._decoder=decoder
+        self._id = id
+        self._uri = uri
+        self._query = query
+        self._decoder = decoder
         self.http_endpoint = HTTPEndpoint()
 
     @property
@@ -153,6 +157,16 @@ class Geoclient:
     def __repr__(self):
         return f'{self.__class__!r}({self._id!r}, {self._uri!r}, {self._query!r}, {self._decoder!r})'
 
+
 class Search(Geoclient):
     def __init__(self, id, uri, query, decoder=SearchDecoder):
         super().__init__(id, uri, query, decoder)
+
+
+def register_services(settings, registry):
+    if settings.geoclient is not None:
+        base_settings = settings.geoclient
+        if base_settings.search is not None:
+            search_settings = base_settings.search
+            search_id = SEARCH_SERVICE_ID
+            registry[search_id] = Search(search_id, search_settings.uri, search_settings.query.to_dict())

@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 
-
 import sphinx_py3doc_enhanced_theme
 
 extensions = [
@@ -47,3 +46,10 @@ html_short_title = '%s-%s' % (project, version)
 napoleon_use_ivar = True
 napoleon_use_rtype = False
 napoleon_use_param = False
+
+# TODO implement tasks so these links exist
+# linkcheck_ignore = [
+#     r'https?://digitalclash.com/',
+#     r'https://requires.io/github/mlipper/bray/requirements.svg\.+',
+#     r'https://pypi.org/project/bray/'
+# ]

@@ -7,6 +7,9 @@ file_system_id = "fs.in"
 path = "@format {this.DEFAULT.input_file}"
 fields = ["Integration ID","Site Name","Full Address","Borough","Status"]
 
+[job.output]
+file_system_id = "fs.out"
+path = "@format {this.DEFAULT.output_file}"
 
 [geoclient]
 app_id = "bray-example"

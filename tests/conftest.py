@@ -2,6 +2,7 @@ import pytest
 
 from . import FIXTURE_ENV
 
+
 @pytest.fixture(scope='function')
 def mock_env_app_id(monkeypatch):
     """Sets environment variable APP_ID to 'test_config' for the duration of
@@ -10,6 +11,7 @@ def mock_env_app_id(monkeypatch):
     expected_value = FIXTURE_ENV['APP_ID']
     monkeypatch.setenv('APP_ID', expected_value)
     return expected_value
+
 
 @pytest.fixture(scope='function')
 def mock_env_app_key(monkeypatch):

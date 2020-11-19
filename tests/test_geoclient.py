@@ -1,12 +1,12 @@
 import pytest
 import json
-import os
+# import os
 
 from . import getfile
 from bray.geoclient import (
     HTTPEndpoint,
     Geoclient,
-    Search,
+    # Search,
     SearchDecoder
 )
 
@@ -17,6 +17,7 @@ SEARCH_FILES = {
     'rejected_no_rejects': getfile('search-rejected-no-rejects.json'),
     'rejected_with_rejects': getfile('search-rejected-with-rejects.json')
 }
+
 
 #
 # The 'decoded_search' marker is registered in <project_root>/pytest.ini.
@@ -34,6 +35,7 @@ def decoded_search(request):
     label = marker.args[0]
     with open(SEARCH_FILES[label], 'r') as f:
         yield json.load(f, cls=SearchDecoder)
+
 
 class TestSearchDecoder:
     @pytest.mark.decoded_search('ok_exact_match')
@@ -54,15 +56,15 @@ class TestSearchDecoder:
     @pytest.mark.decoded_search('rejected_no_rejects')
     def test_transform_rejected_no_rejects(self, decoded_search):
         assert decoded_search[SearchDecoder.RESULT_STATUS] == 'REJECTED'
-        assert not SearchDecoder.NEW_RESULT_STATUS in decoded_search
-        assert not SearchDecoder.SUMMARY in decoded_search
+        assert SearchDecoder.NEW_RESULT_STATUS not in decoded_search
+        assert SearchDecoder.SUMMARY not in decoded_search
 
     #
     # This test does not use the search_response fixture because
     # the result_and_stats method is tested in isolation.
     #
     def test_result_and_stats(self):
-        #data = None
+        # data = None
         with open(SEARCH_FILES['ok_mixed_matches'], 'r') as f:
             data = json.load(f)
 
@@ -72,6 +74,7 @@ class TestSearchDecoder:
         assert isinstance(actual, tuple)
         assert results_fixture[0] == actual[0]
         assert decoder.new_stats_map(exact=0, possible=2, rejected=5) == actual[1]
+
 
 class MockHTTPEndpoint:
 
@@ -83,6 +86,7 @@ class MockHTTPEndpoint:
             'decoder_arg': decoder
         }
 
+
 @pytest.fixture
 def mock_json_obj(monkeypatch):
     """Mocks bray.geoclient.HTTPEndpoint.get_json(...) method."""
@@ -92,8 +96,10 @@ def mock_json_obj(monkeypatch):
 
     monkeypatch.setattr(HTTPEndpoint, "get_json", mock_http_get_json)
 
+
 class MockDecoder:
     pass
+
 
 class EndpointArgs:
     def __init__(self):
@@ -105,9 +111,11 @@ class EndpointArgs:
             **self.query
         }
 
+
 @pytest.fixture
 def endpoint_args():
     return EndpointArgs()
+
 
 class TestGeoclient:
 
