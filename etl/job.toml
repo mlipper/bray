@@ -13,5 +13,7 @@ path = "@format {this.DEFAULT.output_file}"
 
 [geoclient]
 app_id = "bray-example"
-app_key = "s3cret_key"
-baseuri = "https://maps.nyc.gov/geoclient/v2"
+# FIXME Dynaconf should override these attributes when they are set in the
+# environment.
+# app_key = "s3cret_key"
+# baseuri = "https://maps.nyc.gov/geoclient/v2"
