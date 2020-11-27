@@ -3,6 +3,8 @@ graft src
 graft ci
 graft tests
 
+exclude rebuild.sh
+
 include .bumpversion.cfg
 include .coveragerc
 include .cookiecutterrc
