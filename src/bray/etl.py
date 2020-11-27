@@ -1,13 +1,11 @@
-# import argparse
+from dataclasses import dataclass, field
+from typing import Any
 import bonobo
-from bonobo.config import use
+from bonobo.config import use, use_raw_input
 
-# from bray.config import settings
-# from bray.errors import ConfigurationError, NotImplementedError
+from bray import logger
 from bray.errors import ConfigurationError
-# from bray.geoclient import Search, SEARCH_SERVICE_ID
-from bray.geoclient import SEARCH_SERVICE_ID
-# from bray.util import pathify
+from bray.geoclient import SEARCH_SERVICE_ID, Geoclient
 
 # FIXME replace with dependency-injection. E.g., function, etc.
 SERVICE_NAMESPACE = "fs"
@@ -19,16 +17,31 @@ DATA_DIR_SERVICE_ID = f"{SERVICE_NAMESPACE}.data_dir"
 JOB_ID = f"{SERVICE_NAMESPACE}.job"
 
 
+@dataclass
 class Job:
-    def __init__(self, input_file, output_file, data_dir, search):
-        self.input_file = input_file
-        self.output_file = output_file
-        self.data_dir = data_dir
-        self.search = search
+    """Class for encapsulating ETL job configuration data.
+    """
+    input_file: Any  # Usually str or Path
+    output_file: Any  # Usually str or Path
+    data_dir: Any  # Usually str or Path
+    search: Geoclient = field(repr=False)
 
 
 @use("search")
-def search(integration_id, site_name, full_address, borough, status, search):
+@use_raw_input
+def duh(args, search):
+    logger.info("[DUH] %s", str(args))
+    logger.info("[ARGS] %s", args)
+    integration_id, __, full_address, __, __ = args
+    query = {"input": full_address}
+    logger.info("[QUERY] %s", str(query))
+    result = search.call(query)
+    logger.info("[RESULT] %s", result)
+    return {"id": integration_id, **result}
+
+
+@use("search")
+def search(integration_id, site_name, full_address, Borough, Status, search):
     """Call the geoclient search endpoint.
 
     :param integration_id: Caller-provided identifier
@@ -54,7 +67,9 @@ def search(integration_id, site_name, full_address, borough, status, search):
         }
 
     """
-    result = search.call({'input': full_address})
+    # logger.info("etl.search called with arguments: '%s' '%s' '%s' '%s' '%s' '%s'",
+    #             integration_id, site_name, full_address, borough, status, search)
+    result = search({'input': full_address})
     return {
         'integration_id': integration_id,
         **result
@@ -82,10 +97,13 @@ def get_graph(job, graph=None, *, _limit=(), _print=()):
     # writer = bonobo.CsvWriter('output.csv', fs='fs.out', fields=[
     #                           'integration_id', 'site_name', 'address', 'borough', 'status'])
     graph.add_chain(
-        bonobo.CsvReader(job.input_file, fs=FS_IN_SERVICE_ID),
-        *_limit,
+        bonobo.CsvReader(job.input_file,
+                         fs=FS_IN_SERVICE_ID,
+                         fields=['integration_id', 'site_name', 'address', 'borough', 'status']),
+        # *_limit,
         # bonobo.Filter(lambda *row: len(row) == 5),
-        job.search,
+        search,
+        # duh,
         bonobo.UnpackItems(0),
         # bonobo.JsonWriter('output.json', fs='fs.out'),
         bonobo.CsvWriter(job.output_file, fs=FS_OUT_SERVICE_ID),
@@ -122,7 +140,7 @@ def get_services(job):
     return {
         FS_IN_SERVICE_ID: bonobo.open_fs(job.data_dir),
         FS_OUT_SERVICE_ID: bonobo.open_fs(job.data_dir),
-        SEARCH_SERVICE_ID: job.search,
+        "search": job.search,
     }
 
 

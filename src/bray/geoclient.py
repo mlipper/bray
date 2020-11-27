@@ -147,7 +147,7 @@ class Geoclient:
     def decoder(self, decoder):
         self._decoder = decoder
 
-    def call(self, endpoint_args):
+    def __call__(self, endpoint_args):
         qry = {
             **endpoint_args,
             **self.query

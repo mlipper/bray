@@ -23,9 +23,8 @@ def main(args=None):
     )
     parser = etl.get_argument_parser(parser)
     args = parser.parse_args(args=args)
-    # args = args[1:]
     logger.info('Using arguments %s.', args)
     registry = service.Registry()
     job = registry.get_job()
-    logger.info('Using Job(%s, %s, %s, %s).', job.input_file, job.output_file, job.data_dir, str(job.search))
+    logger.info('Running %s.', job)
     etl.run(job)

@@ -122,7 +122,7 @@ class TestGeoclient:
     def test_call_no_decoder(self, mock_json_obj, endpoint_args):
         ea = endpoint_args
         geoclient = Geoclient('no-decoder', ea.uri, ea.query)
-        result = geoclient.call(ea.runtime_args)
+        result = geoclient(ea.runtime_args)
         assert result['uri_arg'] == ea.uri
         assert result['query_arg'] == ea.expected_query
         assert result['decoder_arg'] is None
@@ -130,7 +130,7 @@ class TestGeoclient:
     def test_call_with_decoder(self, mock_json_obj, endpoint_args):
         ea = endpoint_args
         geoclient = Geoclient('with-decoder', ea.uri, ea.query, decoder=MockDecoder)
-        result = geoclient.call(ea.runtime_args)
+        result = geoclient(ea.runtime_args)
         assert result['uri_arg'] == ea.uri
         assert result['query_arg'] == ea.expected_query
         assert result['decoder_arg'] == MockDecoder
