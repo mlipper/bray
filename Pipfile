@@ -16,5 +16,6 @@ bump2version = "*"
 bonobo = "==0.7.0rc3"
 # bonobo = { git = "https://github.com/python-bonobo/bonobo.git", editable = true }
 dynaconf = "*"
-#[requires]
-#python_version = "3.9"
+
+[requires]
+python_version >= "3.8"
