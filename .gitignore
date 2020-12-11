@@ -23,6 +23,7 @@ lib64
 venv*/
 pyvenv*/
 pip-wheel-metadata/
+.python-version
 
 # Installer logs
 pip-log.txt

@@ -3,7 +3,7 @@ graft src
 graft ci
 graft tests
 
-exclude rebuild.sh
+exclude rebuild.sh .python-version
 
 include .bumpversion.cfg
 include .coveragerc
