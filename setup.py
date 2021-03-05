@@ -95,8 +95,8 @@ setup(
         'dynaconf',
     ],
     extras_require={  # Optional
-        # 'dev': ['check-manifest'],
-        # 'test': ['coverage'],
+        'dev': ['check-manifest'],
+        'test': ['coverage'],
     },
 
     # Originally added to include default `settings.toml`
