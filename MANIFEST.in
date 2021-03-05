@@ -6,7 +6,7 @@ graft src
 graft ci
 graft tests
 
-exclude rebuild.sh .python-version
+exclude rebuild.sh .python-version tox.ini.original
 
 include .bumpversion.cfg
 include .coveragerc
