@@ -1,10 +1,14 @@
 # import pytest
+import os
+from bray import logger
 from bray.config import settings
 
 
 class TestConfig:
 
     def test_defaults(self):
+        for k, v in sorted(os.environ.items()):
+            logger.info("[ENV] %s=%s", k, v)
         assert settings.default.etl_dir == "etl"
         assert settings.default.data_dir == "etl/data"
         assert settings.default.input_file == "input.csv"
