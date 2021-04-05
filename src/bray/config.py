@@ -1,6 +1,19 @@
 from dynaconf import Dynaconf
 from pathlib import Path
 
+
+# How to run the dynaconf CLI list command
+#
+# Assumptions:
+#   Python's sys.path contains '<bray project root>/src'
+#   Your shell's CWD is <bray project root>
+#
+# Command line:
+#   $ cd path/to/<bray project root>
+#   $ dynaconf -i bray.config.settings list --all
+#   # If that fails, try:
+#   $ ENV_FOR_DYNACONF=DEFAULT dynaconf -i bray.config.settings list --all
+#
 # TODO Is this acceptable to insure base settings.toml file is found at runtime?
 # E.g., when running pytest from the source project root directory
 # E.g., when running from .zip, .tgz, .egg files
@@ -11,6 +24,7 @@ DEFAULT_DYNACONF_SETTINGS_FILE = Path(DEFAULT_DYNACONF_ROOT_PATH) / 'settings.to
 DEFAULT_ETL_DIR = Path.cwd() / 'etl'
 DEFAULT_DATA_DIR = Path(DEFAULT_ETL_DIR) / 'data'
 DEFAULT_JOB_SETTINGS_FILE = Path(DEFAULT_ETL_DIR) / 'job.toml'
+
 
 settings = Dynaconf(
     root_path=DEFAULT_DYNACONF_ROOT_PATH,

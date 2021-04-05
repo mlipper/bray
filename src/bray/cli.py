@@ -9,22 +9,24 @@
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 import argparse
-from . import logger
 from bray import etl
+from bray import logger
 from bray import service
 
 
+def get_argument_parser():
+    """Create an ArgumentParser customized for use with the Bonobo ETL framework."""
+    parser = argparse.ArgumentParser(description="Invoke bray to geocode New York City location data with geoclient.")
+    parser.add_argument("configfile", action="store_true", help="Path to bray configuration file.")
+    parser.add_argument("--limit", "-l", type=int, default=None, help="If set, limits the number of processed lines.")
+    parser.add_argument("--print", "-p", action="store_true", default=False, help="If set, pretty prints before writing to output file.")
+    return parser
+
+
 def main(args=None):
-    parser = argparse.ArgumentParser(description='Invoke bray to geocode New York City location data with geoclient.')
-    parser.add_argument(
-        'configfile',
-        action='store_true',
-        help='Path to bray configuration file.'
-    )
-    parser = etl.get_argument_parser(parser)
-    args = parser.parse_args(args=args)
-    logger.info('Using arguments %s.', args)
+    logger.debug("Arguments to main(): %s.", args)
     registry = service.Registry()
     job = registry.get_job()
-    logger.info('Running %s.', job)
-    etl.run(job)
+    logger.info("Running %s.", job)
+    etl.run(job, get_argument_parser())
+    logger.info("%s complete.", job)

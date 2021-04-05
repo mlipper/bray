@@ -5,7 +5,8 @@ from json import JSONDecoder
 # from typing import TypeVar
 from urllib import parse, request
 
-from . import logger
+from bray import logger
+
 
 # FIXME replace with dependency-injection. E.g., function, etc.
 SERVICE_NAMESPACE = "gc"

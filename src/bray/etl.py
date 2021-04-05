@@ -7,6 +7,7 @@ from bray import logger
 from bray.errors import ConfigurationError
 from bray.geoclient import SEARCH_SERVICE_ID, Geoclient
 
+
 # FIXME replace with dependency-injection. E.g., function, etc.
 SERVICE_NAMESPACE = "fs"
 FS_IN_SERVICE_ID = f"{SERVICE_NAMESPACE}.in"
@@ -27,17 +28,15 @@ class Job:
     search: Geoclient = field(repr=False)
 
 
-@use("search")
 @use_raw_input
-def duh(args, search):
-    logger.info("[DUH] %s", str(args))
-    logger.info("[ARGS] %s", args)
-    integration_id, __, full_address, __, __ = args
-    query = {"input": full_address}
-    logger.info("[QUERY] %s", str(query))
-    result = search.call(query)
-    logger.info("[RESULT] %s", result)
-    return {"id": integration_id, **result}
+def log_raw(args):
+    logger.info("args==%s", args)
+    # integration_id, __, full_address, __, __ = args
+    # query = {"input": full_address}
+    # logger.info("[QUERY] %s", str(query))
+    # result = search(query)
+    # logger.info("[RESULT] %s", result)
+    # return {"id": integration_id, **result}
 
 
 @use("search")
@@ -76,36 +75,38 @@ def search(integration_id, site_name, full_address, Borough, Status, search):
     }
 
 
-def get_argument_parser(parser=None):
-    parser = bonobo.get_argument_parser(parser=parser)
+def get_argument_parser(argparser):
+    """Augments the given ArgumentParser for use with the Bonobo ETL framework."""
+    return bonobo.get_argument_parser(parser=argparser)
 
-    parser.add_argument("--limit", "-l", type=int, default=None, help="If set, limits the number of processed lines.")
-    parser.add_argument(
-        "--print", "-p", action="store_true", default=False, help="If set, pretty prints before writing to output file."
+
+def get_debug_graph(job, graph=None, *, _limit=(), _print=()):
+    """Builds a simple graph for debugging."""
+    graph = graph or bonobo.Graph()
+    graph.add_chain(
+        bonobo.CsvReader(job.input_file, fs=FS_IN_SERVICE_ID),
+        *_limit,
+        # bonobo.Filter(lambda *row: len(row) == 5),
+        # bonobo.JsonWriter('output.json', fs='fs.out'),
+        # bonobo.CsvWriter(job.output_file, fs=FS_OUT_SERVICE_ID,
+        #   fields=['integration_id', 'site_name', 'address', 'borough', 'status']),
+        log_raw,
+        *_print,
     )
-
-    return parser
+    return graph
 
 
 def get_graph(job, graph=None, *, _limit=(), _print=()):
-    """
-    This function builds the graph that needs to be executed.
-
-    :return: bonobo.Graph
-    """
+    """Builds the execution graph."""
     graph = graph or bonobo.Graph()
-    # writer = bonobo.CsvWriter('output.csv', fs='fs.out', fields=[
-    #                           'integration_id', 'site_name', 'address', 'borough', 'status'])
     graph.add_chain(
         bonobo.CsvReader(job.input_file,
                          fs=FS_IN_SERVICE_ID,
-                         fields=['integration_id', 'site_name', 'address', 'borough', 'status']),
-        # *_limit,
-        # bonobo.Filter(lambda *row: len(row) == 5),
+                         fields=['integration_id', 'site_name', 'address', 'borough', 'status'],
+                         skip=1),
+        *_limit,
         search,
-        # duh,
         bonobo.UnpackItems(0),
-        # bonobo.JsonWriter('output.json', fs='fs.out'),
         bonobo.CsvWriter(job.output_file, fs=FS_OUT_SERVICE_ID),
         *_print,
     )
@@ -113,30 +114,28 @@ def get_graph(job, graph=None, *, _limit=(), _print=()):
 
 
 def get_graph_options(options):
+    logger.debug("Unpacking command line options %s.", options)
     _limit = options.pop("limit", None)
     _print = options.pop("print", False)
+    graph_options = {
+        "_limit": (bonobo.Limit(_limit),) if _limit else (),
+        "_print": (bonobo.PrettyPrinter(),) if _print else ()}
+    logger.debug("Created graph options %s.", graph_options)
+    return graph_options
 
-    return {"_limit": (bonobo.Limit(_limit),) if _limit else (), "_print": (bonobo.PrettyPrinter(),) if _print else ()}
 
-
-def run(job):
-    parser = get_argument_parser()
+# TODO Replace with Etl class to avoid passing parser around?
+def run(job, argparser):
+    parser = get_argument_parser(argparser)
     with bonobo.parse_args(parser) as options:
         bonobo.run(
-            get_graph(job, **get_graph_options(options)), services=get_services(job)
+            get_graph(job, **get_graph_options(options)),
+            services=get_services(job)
         )
 
 
 def get_services(job):
-    """
-    This function builds the services dictionary, which is a simple dict of names-to-implementation used by bonobo
-    for runtime injection.
-
-    It will be used on top of the defaults provided by bonobo (fs, http, ...). You can override those defaults, or just
-    let the framework define them. You can also define your own services and naming is up to you.
-
-    :return: dict
-    """
+    """Return the names-to-services dict Bonobo uses for runtime injection."""
     return {
         FS_IN_SERVICE_ID: bonobo.open_fs(job.data_dir),
         FS_OUT_SERVICE_ID: bonobo.open_fs(job.data_dir),

@@ -24,3 +24,4 @@ logging.basicConfig(
 )
 # logging.getLogger("chardet.charsetprober").disabled = True
 logger = logging.getLogger(__name__)
+logger.info("%s initialized.", logger)
