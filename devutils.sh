@@ -34,7 +34,7 @@ function devinit(){
     echo -n "[bray] python version: " && virtpy --version
     echo -n "[bray]    pip version: " && virtpip --version
     echo
-    echo pip install --upgrade pip setuptools
+    echo pip install --upgrade pip setuptools build
     echo pip install tox tox-pyenv
     popd >/dev/null
 }
@@ -42,11 +42,12 @@ function devinit(){
 function devclean(){
     pushd "${DIR}"
     echo $(pwd)
+    echo rm -rf build/
     echo rm -rf dist/
     echo rm -rf htmlcov/
     echo rm -f coverage.xml
     echo rm -rf src/*.egg-info
-    echo python setup.py clean --all sdist bdist_wheel
+    echo python setup.py clean --all
     popd
 }
 
