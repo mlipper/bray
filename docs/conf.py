@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
 
-import sphinx_py3doc_enhanced_theme
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -17,11 +17,11 @@ extensions = [
 ]
 source_suffix = '.rst'
 master_doc = 'index'
-project = 'Bray'
-year = '2020'
+project = 'bray'
+year = '2013-2021'
 author = 'Matthew Lipper'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '0.2.0'
+version = release = '0.2.1'
 
 pygments_style = 'trac'
 templates_path = ['.']
@@ -29,27 +29,20 @@ extlinks = {
     'issue': ('https://github.com/mlipper/bray/issues/%s', '#'),
     'pr': ('https://github.com/mlipper/bray/pull/%s', 'PR #'),
 }
-html_theme = "sphinx_py3doc_enhanced_theme"
-html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path()]
-html_theme_options = {
-    'githuburl': 'https://github.com/mlipper/bray/'
-}
+# on_rtd is whether we are on readthedocs.org
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if not on_rtd:  # only set the theme if we're building docs locally
+    html_theme = 'sphinx_rtd_theme'
 
 html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
 html_split_index = False
 html_sidebars = {
-    '**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html'],
+   '**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html'],
 }
 html_short_title = '%s-%s' % (project, version)
 
 napoleon_use_ivar = True
 napoleon_use_rtype = False
 napoleon_use_param = False
-
-# TODO implement tasks so these links exist
-# linkcheck_ignore = [
-#     r'https?://digitalclash.com/',
-#     r'https://requires.io/github/mlipper/bray/requirements.svg\.+',
-#     r'https://pypi.org/project/bray/'
-# ]

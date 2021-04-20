@@ -10,11 +10,18 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: debug-statements
-  - repo: https://github.com/timothycrosley/isort
-    rev: master
+  - repo: https://github.com/pycqa/isort
+    rev: 5.8.0
     hooks:
       - id: isort
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: master
+        name: isort (python)
+      - id: isort
+        name: isort (cython)
+        types: [cython]
+      - id: isort
+        name: isort (pyi)
+        types: [pyi]
+  - repo: https://github.com/pycqa/flake8
+    rev: 3.9.1
     hooks:
-      - id: flake8
+    -   id: flake8

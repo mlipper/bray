@@ -9,15 +9,14 @@
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 import argparse
-from bray import etl
-from bray import logger
-from bray import service
+
+from bray import etl, logger, service
 
 
 def get_argument_parser():
     """Create an ArgumentParser customized for use with the Bonobo ETL framework."""
     parser = argparse.ArgumentParser(description="Invoke bray to geocode New York City location data with geoclient.")
-    parser.add_argument("configfile", action="store_true", help="Path to bray configuration file.")
+    parser.add_argument("--configfile", "-c", action="store_true", default=None, help="Path to bray configuration file.")
     parser.add_argument("--limit", "-l", type=int, default=None, help="If set, limits the number of processed lines.")
     parser.add_argument("--print", "-p", action="store_true", default=False, help="If set, pretty prints before writing to output file.")
     return parser

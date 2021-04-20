@@ -1,7 +1,4 @@
-from bray import config
-from bray import etl
-from bray import geoclient
-from bray import logger
+from bray import config, etl, geoclient, logger
 
 
 # FIXME global variable, not thread-safe

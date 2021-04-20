@@ -1,8 +1,10 @@
+from contextlib import nullcontext as does_not_raise
+from pathlib import Path
+
 import pytest
 
-from pathlib import Path
-from contextlib import nullcontext as does_not_raise
 from bray.util import pathify
+
 
 test_data = [
     ("etl", {"prepend_working_dir": True, "silent_errors": False}, Path("etl"), does_not_raise()),

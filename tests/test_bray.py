@@ -1,5 +1,4 @@
 from bray import logger
-# from bray.cli import main
 
 
 def test_default_config():

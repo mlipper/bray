@@ -1,0 +1,52 @@
+#
+# Background
+# ----------
+# This file contains the unversioned list of packages that bonobo 0.7.0rc3
+# depends on.
+#
+# It exists because, as of 2021-04-20, the bonobo project does not seem to
+# be active and the versions of these dependencies are out-of-date. In some
+# cases, so much so, that they cause deprecation warnings in recent versions
+# of Python (e.g., 3.8, 3.9).
+# 
+# Note that setup.cfg specifies bray's dependencies as follows: 
+#   dynaconf
+#   bonobo==0.7.0rc3
+#
+# Also note that dynaconf is listed below, but bonobo does not depend upon it.
+#
+# Usage
+# -----
+# In a new environment, run:
+#   pip install -rrequirements-before-bonobo.txt  
+#   pip install --no-deps bonobo==0.7.0rc3
+#
+
+# For bray:
+dynaconf
+# For bonobo:
+appdirs
+cached-property
+certifi
+chardet
+colorama
+fs
+graphviz
+idna
+jinja2
+markupsafe
+mondrian
+packaging
+pbr
+psutil
+pyparsing
+python-slugify
+pytz
+requests
+six
+stevedore
+typing
+unidecode
+urllib3
+whistle
+

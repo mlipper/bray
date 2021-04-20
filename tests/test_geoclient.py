@@ -1,14 +1,11 @@
-import pytest
 import json
-# import os
+
+import pytest
+
+from bray.geoclient import Geoclient, HTTPEndpoint, SearchDecoder
 
 from . import getfile
-from bray.geoclient import (
-    HTTPEndpoint,
-    Geoclient,
-    # Search,
-    SearchDecoder
-)
+
 
 SEARCH_FILES = {
     'ok_exact_match': getfile('search-ok-exact-match.json'),

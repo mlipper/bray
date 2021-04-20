@@ -1,6 +1,7 @@
 """bray: geocoding with NYC geoclient"""
 from ._version import __version__
 
+
 __all__ = [
     '__version__',
     'cli',
@@ -15,6 +16,7 @@ __author__ = 'mlipper'
 
 import logging
 import sys
+
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s:%(name)s: %(message)s",

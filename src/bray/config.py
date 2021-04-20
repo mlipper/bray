@@ -1,5 +1,6 @@
-from dynaconf import Dynaconf
 from pathlib import Path
+
+from dynaconf import Dynaconf
 
 
 # How to run the dynaconf CLI list command

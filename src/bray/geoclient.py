@@ -1,8 +1,7 @@
-# from dataclasses import dataclass, field
-from dataclasses import dataclass
 import json
+
+from dataclasses import dataclass
 from json import JSONDecoder
-# from typing import TypeVar
 from urllib import parse, request
 
 from bray import logger

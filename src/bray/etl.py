@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Any
+
 import bonobo
+
 from bonobo.config import use, use_raw_input
 
 from bray import logger

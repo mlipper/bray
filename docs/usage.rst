@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use Bray in a project::
+To use bray in a project::
 
 	import bray
