@@ -45,7 +45,7 @@ pytz
 requests
 six
 stevedore
-typing
+#typing # Do not install when using python>3.6
 unidecode
 urllib3
 whistle
