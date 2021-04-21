@@ -30,9 +30,9 @@ Overview
     :alt: Coverage Status
     :target: https://codecov.io/github/mlipper/bray
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/mlipper/bray/v0.2.0.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/mlipper/bray/v0.3.0.svg
     :alt: Commits since latest release
-    :target: https://github.com/mlipper/bray/compare/v0.2.0...master
+    :target: https://github.com/mlipper/bray/compare/v0.3.0...master
 
 
 
