@@ -18,9 +18,13 @@ Overview
     :target: https://bray.readthedocs.io/
     :alt: Documentation Status
 
-.. |travis| image:: https://api.travis-ci.com/mlipper/bray.svg?branch=master
+..
+    NOTE: travis-ci.org will be shutting down soon and the host names
+          in the URL's below need to change to travis-ci.com.
+
+.. |travis| image:: https://api.travis-ci.org/mlipper/bray.svg?branch=master
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.com/github/mlipper/bray
+    :target: https://travis-ci.org/github/mlipper/bray
 
 .. |codecov| image:: https://codecov.io/gh/mlipper/bray/branch/master/graphs/badge.svg?branch=master
     :alt: Coverage Status
@@ -60,11 +64,11 @@ https://bray.readthedocs.io/
 Development
 ===========
 
-Install tox:
+Install tox::
 
     pip install tox
 
-If you use pyenv, install tox-pyenv:
+If you use pyenv, install tox-pyenv::
 
     pip install tox-pyenv
 

@@ -11,8 +11,3 @@ Changelog
 ------------------
 
 * Basic working command-line interface.
-
-0.3.0 (2021-04-20)
-------------------
-
-* Betterify test, build, packaging approach.
