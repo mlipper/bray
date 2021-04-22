@@ -1,4 +1,9 @@
-from bray import config, etl, geoclient, logger
+import logging
+
+from bray import config, etl, geoclient
+
+
+logger = logging.getLogger(__name__)
 
 
 # FIXME global variable, not thread-safe

@@ -1,7 +1,10 @@
 import os
+import logging
 
-from bray import logger
 from bray.config import settings
+
+
+logger = logging.getLogger(__name__)
 
 
 class TestConfig:

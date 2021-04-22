@@ -1,10 +1,11 @@
 import json
+import logging
 
 from dataclasses import dataclass
 from json import JSONDecoder
 from urllib import parse, request
 
-from bray import logger
+logger = logging.getLogger(__name__)
 
 
 # FIXME replace with dependency-injection. E.g., function, etc.

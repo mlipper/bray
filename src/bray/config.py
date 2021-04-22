@@ -1,3 +1,5 @@
+import sys
+
 from pathlib import Path
 
 from dynaconf import Dynaconf
@@ -25,6 +27,42 @@ DEFAULT_DYNACONF_SETTINGS_FILE = Path(DEFAULT_DYNACONF_ROOT_PATH) / 'settings.to
 DEFAULT_ETL_DIR = Path.cwd() / 'etl'
 DEFAULT_DATA_DIR = Path(DEFAULT_ETL_DIR) / 'data'
 DEFAULT_JOB_SETTINGS_FILE = Path(DEFAULT_ETL_DIR) / 'job.toml'
+# TODO: allow override of default log levels from cli
+LOGLEVELS = {
+    "console": "INFO",
+    "file": "INFO"
+}
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '%(asctime)s %(name)-16s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+            'level': LOGLEVELS["console"],
+            'stream': sys.stdout
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'default',
+            'level': LOGLEVELS["file"],
+            'filename': 'bray.log',
+            'mode': 'w',
+            'encoding': 'utf-8',
+            'maxBytes': 2000000,
+            'backupCount': 3
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'DEBUG'
+    },
+}
 
 
 settings = Dynaconf(

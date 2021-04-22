@@ -9,9 +9,12 @@
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 import argparse
+import logging
 
-from bray import etl, logger, service
+from bray import etl, service
 
+
+logger = logging.getLogger(__name__)
 
 def get_argument_parser():
     """Create an ArgumentParser customized for use with the Bonobo ETL framework."""

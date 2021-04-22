@@ -1,3 +1,5 @@
+import logging
+
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -5,10 +7,10 @@ import bonobo
 
 from bonobo.config import use, use_raw_input
 
-from bray import logger
 from bray.errors import ConfigurationError
 from bray.geoclient import SEARCH_SERVICE_ID, Geoclient
 
+logger = logging.getLogger(__name__)
 
 # FIXME replace with dependency-injection. E.g., function, etc.
 SERVICE_NAMESPACE = "fs"

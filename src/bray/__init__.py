@@ -15,15 +15,29 @@ __all__ = [
 __author__ = 'mlipper'
 
 import logging
-import sys
+import logging.config
+import logging.handlers
+
+from bray.config import LOGGING, LOGLEVELS
 
 
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s:%(name)s: %(message)s",
-    level=logging.DEBUG,
-    datefmt="%H:%M:%S",
-    stream=sys.stderr
-)
-# logging.getLogger("chardet.charsetprober").disabled = True
-logger = logging.getLogger(__name__)
-logger.info("%s initialized.", logger)
+def configure_logging(conf=LOGGING, levels=LOGLEVELS):
+    handlers = conf['handlers']
+    for name, props in handlers.items():
+        if name in levels.keys():
+            print(f"name={name}")
+            print(f"props={props}")
+            props['level'] = levels[name]
+    logging.config.dictConfig(conf)
+    # Return conf, levels for easier testing
+    return conf, levels
+
+
+def _init():
+    conf, __ = configure_logging()
+    logger = logging.getLogger(__name__)
+    logger.debug("%s logger configured by %s using:", __name__, "logging.config.dictConfig")
+    logger.debug(conf)
+
+
+_init()

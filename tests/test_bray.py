@@ -1,11 +1,15 @@
-from bray import logger
+import logging
 
 
-def test_default_config():
-    pass
+logger = logging.getLogger(__name__)
+
+
+def test_configure_logging():
+    # TODO test me!
+    logger.warning("TODO: test me!!")
 
 
 def test_main():
     # TODO test me!
+    logger.warning("TODO: test me!!")
     # main([])
-    logger.warning("TODO: bray.cli.main -> test me!!")
