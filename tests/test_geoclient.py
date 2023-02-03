@@ -1,10 +1,13 @@
 import json
-
+import logging
 import pytest
 
 from bray.geoclient import Geoclient, HTTPEndpoint, SearchDecoder
 
 from . import getfile
+
+
+logger = logging.getLogger(__name__)
 
 
 SEARCH_FILES = {
@@ -68,6 +71,7 @@ class TestSearchDecoder:
         results_fixture = data[SearchDecoder.RESULTS]
         decoder = SearchDecoder()
         actual = decoder.result_and_stats(data)
+        logger.info(actual)
         assert isinstance(actual, tuple)
         assert results_fixture[0] == actual[0]
         assert decoder.new_stats_map(exact=0, possible=2, rejected=5) == actual[1]
